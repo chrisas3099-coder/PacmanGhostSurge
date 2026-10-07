@@ -1,0 +1,57 @@
+CODE MAP
+
+What to find: Where Pacman is created
+Line number(s): 416-418
+What the code does there:
+Creates the Pacman player object, then adds Pacman to the sprite group so it can be drawn and to the collision group so the game can detect when Pacman touches things.
+
+What to find: Where Blinky, Pinky, Inky, Clyde are created
+Line number(s): 420-434
+What the code does there:
+Creates Blinky, Pinky, Inky, and Clyde, then adds each ghost to the monster group for collision detection and all-sprites group so they can be drawn on screen.
+
+What to find: Where the game loop starts
+Line number(s): 475
+What the code does there:
+Starts the main game loop and keeps the game running while done is False.
+
+What to find: Where keyboard input is handled
+Line number(s): 485-503
+What the code does there:
+Detects arrow-key presses and releases and changes Pacman's movement direction.
+
+What to find: Where ghosts are updated each frame
+Line number(s): 514-536
+What the code does there:
+Updates the movement of Pinky, Blinky, Inky, and Clyde each frame by changing their speed and position.
+
+What to find: Where collision detection happens
+Line number(s): 538-543 and 565-570
+What the code does there:
+Checks when Pacman collides with pellets and ghosts so the game can update the score or trigger the ghost-contact behavior.
+
+What to find: Where the score text is drawn
+Line number(s): 555-556
+What the code does there:
+Creates the score text and draws it on the screen near the top-left corner.
+
+What to find: Where Game Over is triggered
+Line number(s): 565-571
+What the code does there:
+Checks whether Pacman touched a ghost and, if so, calls the Game Over screen.
+
+
+Two questions to answer at the bottom of CODE_MAP.md:
+
+1. What is the difference between monsta_list and all_sprites_list? What happens if a sprite is in one but not the other?
+
+monsta_list is used to keep track of the ghosts for ghost collision detection.
+
+all_sprites_list holds the game sprites that are drawn on the screen. If a sprite is not in monsta_list, Pacman will not detect it as a ghost. If a sprite is not in all_sprites_list, it may not be handled with the main group of sprites for drawing.
+
+
+2. What frame rate is the game set to, and what does the game loop do every frame, in order?
+
+The game is set to 10 frames per second with clock.tick(10).
+
+Each frame, the game handles events and keyboard input, updates Pacman, updates the ghosts, checks collisions and score, draws the game objects and text, checks for win or Game Over conditions, updates the display, and then limits the loop to 10 FPS.
