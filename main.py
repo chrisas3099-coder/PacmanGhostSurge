@@ -385,7 +385,17 @@ c_w = 303+(32-16) #Clyde width
 # Write your pseudocode as comments first.
 #################################################################
 
+# Loop through each ghost type list in gi.
+# Save the surrent number of ghosts before adding any new ghosts.
+# Work out how many new ghosts are needed to double the current count.
+# Make sure the ghost type never goes above 32 ghosts.
+# Create the new ghosts.
+# Add each new ghost to its correct ghost type list.
+# Add each new ghost to monsta_list for collision detection.
+# Add each new ghost to asl so it can be drawn on the screen.
 
+def duplicate_gjost(gi, monsta_lists, asl):
+    ghost_data = [(w,b_h, "images/Binky.png"), (w,m_h, "images/Pinky.png"), (i_w,m_h, "images/Inky.png"), (c_w,m_h, "images/Clyde.png")]
 def startGame():
 
     all_sprites_list = pygame.sprite.RenderPlain()
@@ -436,7 +446,16 @@ def startGame():
     # TODO 1 (Task 3, Part A): create the four ghost tracking lists
     # and the ghost_instances master list here.
 
+    blinky_instances = [Blinky]
+    pinky_instances = [Pinky] 
+    inky_instances = [Inky]
+    clyde_instances = [Clyde]
+
+    ghost_instances = [blinky_instances, pinky_instances, inky_instances, clyde_instances]
+
     # TODO 2 (Task 3, Part B): start the 30-second repeating timer here.
+
+    pygame.time.set_timer(pygame.USEREVENT + 1, 30000)
 
     # TODO 8 (Task 5): record the game start time and create a
     # ghosts-removed counter here.
@@ -478,6 +497,8 @@ def startGame():
 
             # TODO 3 (Task 3, Part C): check for the timer event and
             # call duplicate_ghost here.
+
+            if event. type == pygame.USEREVENT + 1: duplicate_ghost(ghost_instances, monsta_list, all_sprites_list)
 
             if event.type == pygame.QUIT:
                 done=True
