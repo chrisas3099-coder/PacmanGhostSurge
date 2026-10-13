@@ -168,6 +168,8 @@ class Player(pygame.sprite.Sprite):
         self.rect.left = x
         self.prev_x = x
         self.prev_y = y
+        self.turn = 0
+        self.steps = 0
 
     # Clear the speed of the player
     def prevdirection(self):
@@ -394,8 +396,22 @@ c_w = 303+(32-16) #Clyde width
 # Add each new ghost to monsta_list for collision detection.
 # Add each new ghost to asl so it can be drawn on the screen.
 
-def duplicate_gjost(gi, monsta_lists, asl):
-    ghost_data = [(w,b_h, "images/Binky.png"), (w,m_h, "images/Pinky.png"), (i_w,m_h, "images/Inky.png"), (c_w,m_h, "images/Clyde.png")]
+def duplicate_ghost(gi, monsta_list, asl):
+    ghost_data = [(w,b_h, "images/Blinky.png"), (w,m_h, "images/Pinky.png"), (i_w,m_h, "images/Inky.png"), (c_w,m_h, "images/Clyde.png")]
+    for t in range(4):
+        current = len(gi[t])
+        if current == 0:
+            to_add = 1
+        else:
+            to_add = min(current, 32 - current)
+        for n in range(to_add):
+                x,y,image = ghost_data[t]
+                new_ghost = Ghost(x,y,image)
+                gi[t].append(new_ghost)
+                monsta_list.add(new_ghost)
+                asl.add(new_ghost)
+        print(len(gi[t]))
+
 def startGame():
 
     all_sprites_list = pygame.sprite.RenderPlain()
@@ -532,29 +548,33 @@ def startGame():
         # Change each block into a for loop over that ghost type's list
         # so every duplicated ghost moves too.
 
-        returned = Pinky.changespeed(Pinky_directions,False,p_turn,p_steps,pl)
-        p_turn = returned[0]
-        p_steps = returned[1]
-        Pinky.changespeed(Pinky_directions,False,p_turn,p_steps,pl)
-        Pinky.update(wall_list,False)
+        for pinky in pinky_instances:
+            returned = pinky.changespeed(Pinky_directions,False,p_turn,p_steps,pl)
+            p_turn = returned[0]
+            p_steps = returned[1]
+            pinky.changespeed(Pinky_directions,False,p_turn,p_steps,pl)
+            pinky.update(wall_list,False)
 
-        returned = Blinky.changespeed(Blinky_directions,False,b_turn,b_steps,bl)
-        b_turn = returned[0]
-        b_steps = returned[1]
-        Blinky.changespeed(Blinky_directions,False,b_turn,b_steps,bl)
-        Blinky.update(wall_list,False)
+        for blinky in blinky_instances:
+            returned = blinky.changespeed(Blinky_directions,False,b_turn,b_steps,bl)
+            b_turn = returned[0]
+            b_steps = returned[1]
+            blinky.changespeed(Blinky_directions,False,b_turn,b_steps,bl)
+            blinky.update(wall_list,False)
 
-        returned = Inky.changespeed(Inky_directions,False,i_turn,i_steps,il)
-        i_turn = returned[0]
-        i_steps = returned[1]
-        Inky.changespeed(Inky_directions,False,i_turn,i_steps,il)
-        Inky.update(wall_list,False)
+        for inky in inky_instances:
+            returned = inky.changespeed(Inky_directions,False,i_turn,i_steps,il)
+            i_turn = returned[0]
+            i_steps = returned[1]
+            inky.changespeed(Inky_directions,False,i_turn,i_steps,il)
+            inky.update(wall_list,False)
 
-        returned = Clyde.changespeed(Clyde_directions,"clyde",c_turn,c_steps,cl)
-        c_turn = returned[0]
-        c_steps = returned[1]
-        Clyde.changespeed(Clyde_directions,"clyde",c_turn,c_steps,cl)
-        Clyde.update(wall_list,False)
+        for clyde in clyde_instances:   
+            returned = clyde.changespeed(Clyde_directions,"clyde",c_turn,c_steps,cl)
+            c_turn = returned[0]
+            c_steps = returned[1]
+            clyde.changespeed(Clyde_directions,"clyde",c_turn,c_steps,cl)
+            clyde.update(wall_list,False)
 
         # See if the Pacman block has collided with anything.
         blocks_hit_list = pygame.sprite.spritecollide(Pacman, block_list, True)
@@ -577,6 +597,9 @@ def startGame():
         screen.blit(text, [10, 10])
 
         # TODO 5 (Task 4, Part B): draw "Ghosts: N" on screen here.
+        ghost_count = len(monsta_list)
+        ghost_text = font.render("Ghosts: " + str(ghost_count), True, white)
+        screen.blit(ghost_text, [10,40])
 
         # TODO 8 (Task 5): draw survival time and ghosts removed here.
 
@@ -588,8 +611,20 @@ def startGame():
         # TODO 6 (Task 4, Parts C and D): replace the instant Game Over below.
         # Touching a ghost should remove it. Game Over should only
         # happen when there are 128 or more ghosts.
-        if monsta_hit_list:
-            doNext("Game Over",235,all_sprites_list,block_list,monsta_list,pacman_collide,wall_list,gate)
+        
+        if len(monsta_list) >= 128:
+            doNext("Game Over", 235,all_sprites_list,block_list,monsta_list,pacman_collide,wall_list,gate)
+
+        for ghost in monsta_hit_list:
+            monsta_list.remove(ghost)
+            all_sprites_list.remove(ghost)
+
+            for ghost_list in ghost_instances:
+                if ghost in ghost_list:
+                    ghost_list.remove(ghost)
+                    break
+        
+       
 
         # ALL CODE TO DRAW SHOULD GO ABOVE THIS COMMENT
 
